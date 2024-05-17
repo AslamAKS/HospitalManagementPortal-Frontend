@@ -32,8 +32,6 @@ function NewPatients() {
   }
 
   return (
-    // <div >
-    //   <CssBaseline />
     <Container
     maxWidth
       sx={{
