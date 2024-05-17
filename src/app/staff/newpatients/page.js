@@ -13,17 +13,38 @@ import React, { useState } from "react";
 
 function NewPatients() {
 
+  const [patientId,setPatientId]=useState("");
   const [name,setName]=useState("");
   const [age,setAge]=useState("");
   const [contact,setContact]=useState("");
   const [place,setPlace]=useState("");
   const [address,setAddress]=useState("");
 
-  const registerUser=()=>{
-    console.log(name,age,contact,place,address);
+  const registerUser=async()=>{
+    let user = {
+      PatientId:patientId,
+      PatientName:name,
+      Age:age,
+      ContactNo:contact,
+      Place:place,
+      Address:address
+    }
+
+    console.log(user);
+
+    let saveUser=await fetch('http://localhost:8000/patients',{
+      method:'POST',
+      body:JSON.stringify(user),
+      headers:{
+        'Content-Type': 'application/json',
+      }
+    })
+
+    if(saveUser.status==200) alert('done')
   }
 
   const cancel=()=>{
+    setPatientId('')
     setName('');
     setAge('')
     setContact('')
@@ -58,10 +79,14 @@ function NewPatients() {
       >
         <Typography variant="h3">New Patient</Typography>
         <TextField
-          disabled
+          required
           id="outlined-disabled"
           label="Patient ID"
-          defaultValue="Patient ID"
+          // defaultValue="Patient ID"
+          value={patientId}
+              onChange={(event) => {
+                setPatientId(event.target.value);
+              }}
         />
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 2 }}>
           <Grid item xs={6}>
