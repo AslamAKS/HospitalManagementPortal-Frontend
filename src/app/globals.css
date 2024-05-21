@@ -19,12 +19,7 @@
 body {
   font-family: var(--font-poppins);
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: linear-gradient(354deg, rgba(110,191,255,1) 0%, rgba(255,255,255,1) 78%);
 }
 
 @layer utilities {
