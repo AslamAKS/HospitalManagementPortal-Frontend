@@ -17,23 +17,35 @@ import React, { useContext, useState } from "react";
 
 function NewBooking() {
   const { bookingpage, setBookingPage } = useContext(CreateBookingContext);
-  const [patientDetails,setPatientDetails]=useState('');
+  const [patientDetails, setPatientDetails] = useState("");
 
   const handleClose = () => {
     setBookingPage(false);
   };
 
-  const handleFindUser=async (event)=>{
-    
-    if(event.target.value.length===6){
-      let patientId=event.target.value
-      let patientGETResponce = await fetch(`http://localhost:8000/patients/byId?pId=${patientId}`,{
-        method:'GET'
-      })
-      let patient=await patientGETResponce.json()
-      setPatientDetails(patient)
+  const handleFindUser = async (event) => {
+    if (event.target.value.length === 6) {
+      let patientId = event.target.value;
+      let patientGETResponce = await fetch(
+        `http://localhost:8000/patients/byId?pId=${patientId}`,
+        {
+          method: "GET",
+        }
+      );
+      if(patientGETResponce.status==200){
+        console.log(patientGETResponce.status);
+
+        let patient = await patientGETResponce.json();
+        setPatientDetails(patient);
+      }else{
+        console.log(patientGETResponce.status);
+        setPatientDetails('No Data Found...!');
+      }
+      
+    } else {
+      setPatientDetails("");
     }
-  }
+  };
 
   return (
     <Dialog
@@ -56,18 +68,33 @@ function NewBooking() {
             // value={age}
             onChange={handleFindUser}
           />
-          {patientDetails?
-          <Box sx={{height:'100px'}}>
-            <Typography variant="h5" component="h2" padding={2}>
-            Token No: 01
-          </Typography>
-          <Typography variant="button" component="h1" sx={{ color: "green" }}>
-            Name: {patientDetails.PatientName}
-          </Typography>
-          <Typography variant="button" component="h2">
-            Place: {patientDetails.Place}
-          </Typography>
-          </Box>:``}
+
+          {patientDetails? patientDetails.PatientId ? (
+            <Box sx={{ height: "100px" }}>
+              <Typography variant="h5" component="h2" padding={2}>
+                Token No: 01
+              </Typography>
+              <Typography
+                variant="button"
+                component="h1"
+                sx={{ color: "green" }}
+              >
+                Name: {patientDetails.PatientName}
+              </Typography>
+              <Typography variant="button" component="h2">
+                Place: {patientDetails.Place}
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ height: "100px" }}>
+              <Typography variant="button" component="h2" padding={3} sx={{ color: "red" }}>
+                {patientDetails}
+              </Typography>
+            </Box>
+          ) : <Box sx={{ height: "100px" }}>
+          
+        </Box>}
+
         </DialogContentText>
       </DialogContent>
       <DialogActions>
