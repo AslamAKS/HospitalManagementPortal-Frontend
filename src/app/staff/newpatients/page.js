@@ -40,6 +40,9 @@ function NewPatients() {
       }
     })
 
+    console.log(saveUser);
+
+    if(saveUser.status==400) alert(await saveUser.json())
     if(saveUser.status==200) alert('done')
   }
 

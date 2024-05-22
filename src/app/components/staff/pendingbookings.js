@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -63,22 +64,10 @@ function PendingBooking() {
                 <TableCell align="left">{patient.patient_id}</TableCell>
                 <TableCell align="left">{patient.patient_name}</TableCell>
                 <TableCell align="left">
-                  <a
-                    href="#"
-                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                    //   onClick={handleProceed(patient.patient_id)}
-                  >
-                    Proceed To Doctor
-                  </a>
+                <Button variant="contained" color="success">Proceed To Doctor</Button>
                 </TableCell>
                 <TableCell align="left">
-                  <a
-                    href="#"
-                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                    //   onClick={handleProceed(patient.patient_id)}
-                  >
-                    Cancel
-                  </a>
+                <Button variant="contained" color="error">Cancel</Button>
                 </TableCell>
               </TableRow>
             ))}

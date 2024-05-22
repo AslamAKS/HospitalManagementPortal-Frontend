@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -11,26 +12,27 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-function TodayBooking() {
+function TodayBooking({data}) {
+  console.log(data);
   // const [p,setP]=useState([])
 
-  let patients = [
-    {
-      token_no: "1",
-      patient_name: "Aslam",
-      patient_id: "286693",
-    },
-    {
-      token_no: "2",
-      patient_name: "Aslam",
-      patient_id: "286693",
-    },
-    {
-      token_no: "3",
-      patient_name: "Aslam",
-      patient_id: "286693",
-    },
-  ];
+  // let patients = [
+  //   {
+  //     token_no: "1",
+  //     patient_name: "Aslam",
+  //     patient_id: "286693",
+  //   },
+  //   {
+  //     token_no: "2",
+  //     patient_name: "Aslam",
+  //     patient_id: "286693",
+  //   },
+  //   {
+  //     token_no: "3",
+  //     patient_name: "Aslam",
+  //     patient_id: "286693",
+  //   },
+  // ];
   //   setP(patient)
 
   //   const handleProceed=(token_no)=>{
@@ -52,33 +54,21 @@ function TodayBooking() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {patients.map((patient) => (
+            {data.map((patient) => (
               <TableRow
                 key={patient.patient_id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {patient.token_no}
+                  {patient.TokenNo}
                 </TableCell>
-                <TableCell align="left">{patient.patient_id}</TableCell>
+                <TableCell align="left">{patient.PatientId}</TableCell>
                 <TableCell align="left">{patient.patient_name}</TableCell>
                 <TableCell align="left">
-                  <a
-                    href="#"
-                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                    //   onClick={handleProceed(patient.patient_id)}
-                  >
-                    Proceed To Doctor
-                  </a>
+                  <Button variant="contained" color="success">Proceed To Doctor</Button>
                 </TableCell>
                 <TableCell align="left">
-                  <a
-                    href="#"
-                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                    //   onClick={handleProceed(patient.patient_id)}
-                  >
-                    Move To Pending
-                  </a>
+                <Button variant="contained" color="warning">Move To Pending</Button>
                 </TableCell>
               </TableRow>
             ))}
