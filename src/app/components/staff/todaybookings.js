@@ -10,35 +10,37 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { useState } from "react";
+import axios from "axios";
 
-function TodayBooking({data}) {
-  console.log(data);
-  // const [p,setP]=useState([])
+function TodayBooking({ data, onRefresh }) {
 
-  // let patients = [
-  //   {
-  //     token_no: "1",
-  //     patient_name: "Aslam",
-  //     patient_id: "286693",
-  //   },
-  //   {
-  //     token_no: "2",
-  //     patient_name: "Aslam",
-  //     patient_id: "286693",
-  //   },
-  //   {
-  //     token_no: "3",
-  //     patient_name: "Aslam",
-  //     patient_id: "286693",
-  //   },
-  // ];
-  //   setP(patient)
+  let Booked = data.filter((item) => item.Status == "Booked");
 
-  //   const handleProceed=(token_no)=>{
-  //     patient = patient.filter(item => item.token_id !== token_no);
-  //     setP(patient)
-  //   }
+  let handlePTD = (patient) => {
+    let updateData = {
+      BookingDate: patient.BookingDate,
+      TokenNo:patient.TokenNo,
+      PatientId:patient.PatientId,
+      Status: "PTD",
+      Commets:patient.Commets
+    };
+    axios.put(`http://localhost:8000/booking`,updateData).then((responce)=>alert(responce.data))
+
+    onRefresh()
+  };
+
+  let handlePending = (patient) => {
+    let updateData = {
+      BookingDate: patient.BookingDate,
+      TokenNo:patient.TokenNo,
+      PatientId:patient.PatientId,
+      Status: "Pending",
+      Commets:patient.Commets
+    };
+    axios.put(`http://localhost:8000/booking`,updateData).then((responce)=>alert(responce.data))
+
+    onRefresh()
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -54,7 +56,7 @@ function TodayBooking({data}) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((patient) => (
+            {Booked.map((patient) => (
               <TableRow
                 key={patient.patient_id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -63,12 +65,22 @@ function TodayBooking({data}) {
                   {patient.TokenNo}
                 </TableCell>
                 <TableCell align="left">{patient.PatientId}</TableCell>
-                <TableCell align="left">{patient.patient_name}</TableCell>
                 <TableCell align="left">
-                  <Button variant="contained" color="success">Proceed To Doctor</Button>
+                  {patient.Patient.PatientName}
                 </TableCell>
                 <TableCell align="left">
-                <Button variant="contained" color="warning">Move To Pending</Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={()=>handlePTD(patient)}
+                  >
+                    Proceed To Doctor
+                  </Button>
+                </TableCell>
+                <TableCell align="left">
+                  <Button variant="contained" color="warning" onClick={()=>handlePending(patient)}>
+                    Move To Pending
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

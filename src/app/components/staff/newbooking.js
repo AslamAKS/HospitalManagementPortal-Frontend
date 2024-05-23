@@ -13,11 +13,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import axios from "axios";
+import moment from "moment";
 import React, { useContext, useState } from "react";
 
-function NewBooking() {
+function NewBooking({ data, onRefresh }) {
   const { bookingpage, setBookingPage } = useContext(CreateBookingContext);
   const [patientDetails, setPatientDetails] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
 
   const handleClose = () => {
     setBookingPage(false);
@@ -26,25 +29,33 @@ function NewBooking() {
   const handleFindUser = async (event) => {
     if (event.target.value.length === 6) {
       let patientId = event.target.value;
-      let patientGETResponce = await fetch(
-        `http://localhost:8000/patients/byId?pId=${patientId}`,
-        {
-          method: "GET",
-        }
-      );
-      if(patientGETResponce.status==200){
-        console.log(patientGETResponce.status);
-
-        let patient = await patientGETResponce.json();
-        setPatientDetails(patient);
-      }else{
-        console.log(patientGETResponce.status);
-        setPatientDetails('No Data Found...!');
-      }
-      
+      let patientGETResponce = axios
+        .get(`http://localhost:8000/patients/byId?pId=${patientId}`)
+        .then((responce) => {
+          if (responce.status === 200) setPatientDetails(responce.data);
+          setIsDisabled(false)
+        });
     } else {
       setPatientDetails("");
     }
+  };
+
+  const handleBook = () => {
+    let todayDate =  moment().format('YYYY-MM-DD 00:00:00:000');
+
+    if(patientDetails){
+      let bookingDetails={
+        BookingDate:todayDate,
+        TokenNo: data,
+        PatientId:patientDetails.PatientId,
+        Status:"Booked",
+        Comments:""
+      }
+
+      axios.post(`http://localhost:8000/booking`,bookingDetails).then((responce)=>console.log(responce.data))
+    }
+    onRefresh()
+    setBookingPage(false);
   };
 
   return (
@@ -69,39 +80,51 @@ function NewBooking() {
             onChange={handleFindUser}
           />
 
-          {patientDetails? patientDetails.PatientId ? (
-            <Box sx={{ height: "100px" }}>
-              <Typography variant="h5" component="h2" padding={2}>
-                Token No: 01
-              </Typography>
-              <Typography
-                variant="button"
-                component="h1"
-                sx={{ color: "green" }}
-              >
-                Name: {patientDetails.PatientName}
-              </Typography>
-              <Typography variant="button" component="h2">
-                Place: {patientDetails.Place}
-              </Typography>
-            </Box>
+          {patientDetails ? (
+            patientDetails.PatientId ? (
+              <Box sx={{ height: "100px" }}>
+                <Typography variant="h5" component="h2" padding={2}>
+                  TokenNo: {data}
+                </Typography>
+                <Typography
+                  variant="button"
+                  component="h1"
+                  sx={{ color: "green" }}
+                >
+                  Name: {patientDetails.PatientName}
+                </Typography>
+                <Typography variant="button" component="h2">
+                  Place: {patientDetails.Place}
+                </Typography>
+              </Box>
+            ) : (
+              <Box sx={{ height: "100px" }}>
+                <Typography
+                  variant="button"
+                  component="h2"
+                  padding={3}
+                  sx={{ color: "red" }}
+                >
+                  "No Patient Found...!"
+                </Typography>
+              </Box>
+            )
           ) : (
-            <Box sx={{ height: "100px" }}>
-              <Typography variant="button" component="h2" padding={3} sx={{ color: "red" }}>
-                {patientDetails}
-              </Typography>
-            </Box>
-          ) : <Box sx={{ height: "100px" }}>
-          
-        </Box>}
-
+            <Box sx={{ height: "100px" }}></Box>
+          )}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleClose} color="error">
           Cancel
         </Button>
-        <Button onClick={handleClose} autoFocus color="success" size="large">
+        <Button
+          disabled={isDisabled}
+          onClick={handleBook}
+          autoFocus
+          color="success"
+          size="large"
+        >
           Book
         </Button>
       </DialogActions>

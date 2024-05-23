@@ -9,34 +9,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { useState } from "react";
 
-function ProccedToDoctorBooking() {
-  // const [p,setP]=useState([])
-
-  let patients = [
-    {
-      token_no: "1",
-      patient_name: "Aslam",
-      patient_id: "286693",
-    },
-    {
-      token_no: "2",
-      patient_name: "Aslam",
-      patient_id: "286693",
-    },
-    {
-      token_no: "3",
-      patient_name: "Aslam",
-      patient_id: "286693",
-    },
-  ];
-  //   setP(patient)
-
-  //   const handleProceed=(token_no)=>{
-  //     patient = patient.filter(item => item.token_id !== token_no);
-  //     setP(patient)
-  //   }
+function ProccedToDoctorBooking({data,onRefresh}) {
+  
+  let ptd = data.filter((item)=> item.Status=='PTD')
 
   return (
     <div className="overflow-x-auto">
@@ -52,16 +28,16 @@ function ProccedToDoctorBooking() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {patients.map((patient) => (
+            {ptd.map((patient) => (
               <TableRow
                 key={patient.patient_id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {patient.token_no}
+                  {patient.TokenNo}
                 </TableCell>
-                <TableCell align="left">{patient.patient_id}</TableCell>
-                <TableCell align="left">{patient.patient_name}</TableCell>
+                <TableCell align="left">{patient.PatientId}</TableCell>
+                <TableCell align="left">{patient.Patient.PatientName}</TableCell>
               </TableRow>
             ))}
           </TableBody>

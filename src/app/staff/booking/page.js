@@ -7,6 +7,7 @@ import TodayBooking from "@/app/components/staff/todaybookings";
 import { CreateBookingContext } from "@/app/context/newbookingcontext";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Box, Button, Tab } from "@mui/material";
+import axios from "axios";
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -14,27 +15,32 @@ function Bookings() {
   const { bookingpage, setBookingPage } = useContext(CreateBookingContext);
   const [value, setValue] = useState("1");
   const [bookings, setBookings] = useState([]);
-  const [ptd, setPtd] = useState([]);
-  const [pending, setPending] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+  const [tokenNo, setTokenNO] = useState(0);
 
-  useEffect(async () => {
-    let todayDate = moment().utc().startOf('day').format('YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-    let selectBookingDetails = await fetch(`http://localhost:8000/booking?date=${todayDate}`,{
-      method:'GET'
-    });
-    let bookingDetails = await selectBookingDetails.json()
-    console.log('-----------------',bookingDetails);
-    let Booked = bookingDetails.filter((item)=> item.Status=='Booked')
-    setBookings(Booked)
+  useEffect(() => {
+    let todayDate = moment().startOf('day').format('YYYY-MM-DD HH:mm:ss.SSS')
 
-    let PTD = bookingDetails.filter((item)=> item.Status=='PTD')
-    setPtd(PTD)
+    let callBookingDetails = axios
+      .get(`http://localhost:8000/booking?date=${todayDate}`)
+      .then((responce) => {
+        console.log(responce.data);
+        setBookings(responce.data);
+        let lastElement = responce.data.at(-1);
+        if (lastElement) {
+          console.log("yes last elment");
+          let tokenNumber = lastElement.TokenNo + 1;
+          setTokenNO(tokenNumber);
+        } else {
+          setTokenNO(1);
+          console.log("no last elment");
+        }
+      });
+  }, [refresh]);
 
-    let Pending = bookingDetails.filter((item)=> item.Status=='Pending')
-    setPending(Pending)
-
-    console.log('how data come ? ',bookings);
-  }, [bookings,ptd,pending]);
+  const handleRefresh = () => {
+    setRefresh((prev) => !prev); // Toggle the refresh state to trigger useEffect
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -47,7 +53,8 @@ function Bookings() {
   return (
     <Box
       sx={{
-        height: "100vh",
+        height:'100vh',
+        backgroundRepeat:"no-repeat",
         width: "100%",
         color: "white",
         textAlign: "center",
@@ -62,7 +69,9 @@ function Bookings() {
       >
         New Booking
       </Button>
-      {bookingpage ? <NewBooking /> : null}
+      {bookingpage ? (
+        <NewBooking data={tokenNo} onRefresh={handleRefresh} />
+      ) : null}
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -72,13 +81,13 @@ function Bookings() {
           </TabList>
         </Box>
         <TabPanel value="1">
-          <TodayBooking data={bookings}/>
+          <TodayBooking data={bookings} onRefresh={handleRefresh} />
         </TabPanel>
         <TabPanel value="2">
-          <PendingBooking data={ptd}/>
+          <PendingBooking data={bookings} onRefresh={handleRefresh} />
         </TabPanel>
         <TabPanel value="3">
-          <ProccedToDoctorBooking data={pending}/>
+          <ProccedToDoctorBooking data={bookings} onRefresh={handleRefresh} />
         </TabPanel>
       </TabContext>
     </Box>
