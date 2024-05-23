@@ -27,34 +27,48 @@ function NewBooking({ data, onRefresh }) {
   };
 
   const handleFindUser = async (event) => {
+    let todayDate = moment().startOf("day").format("YYYY-MM-DD 00:00:00.000");
     if (event.target.value.length === 6) {
       let patientId = event.target.value;
-      let patientGETResponce = axios
-        .get(`http://localhost:8000/patients/byId?pId=${patientId}`)
-        .then((responce) => {
-          if (responce.status === 200) setPatientDetails(responce.data);
-          setIsDisabled(false)
-        });
+
+      let checkBooking = axios.get(
+        `http://localhost:8000/booking/byId?pId=${patientId}&date=${todayDate}`
+      );
+
+      if ((await checkBooking).data == null) {
+        let patientGETResponce = axios
+          .get(`http://localhost:8000/patients/byId?pId=${patientId}`)
+          .then((responce) => {
+            setPatientDetails(responce.data);
+            if (responce.data.PatientId) setIsDisabled(false);
+          });
+      } else {
+        setIsDisabled(true);
+        setPatientDetails("Alredy Booked Today!");
+      }
     } else {
+      setIsDisabled(true);
       setPatientDetails("");
     }
   };
 
   const handleBook = () => {
-    let todayDate =  moment().format('YYYY-MM-DD 00:00:00:000');
+    if (patientDetails) {
+      let todayDate = moment().format("YYYY-MM-DD 00:00:00:000");
 
-    if(patientDetails){
-      let bookingDetails={
-        BookingDate:todayDate,
+      let bookingDetails = {
+        BookingDate: todayDate,
         TokenNo: data,
-        PatientId:patientDetails.PatientId,
-        Status:"Booked",
-        Comments:""
-      }
+        PatientId: patientDetails.PatientId,
+        Status: "Booked",
+        Comments: "",
+      };
 
-      axios.post(`http://localhost:8000/booking`,bookingDetails).then((responce)=>console.log(responce.data))
+      axios
+        .post(`http://localhost:8000/booking`, bookingDetails)
+        .then((responce) => console.log(responce.data));
     }
-    onRefresh()
+    onRefresh();
     setBookingPage(false);
   };
 
@@ -105,7 +119,7 @@ function NewBooking({ data, onRefresh }) {
                   padding={3}
                   sx={{ color: "red" }}
                 >
-                  "No Patient Found...!"
+                  {patientDetails}
                 </Typography>
               </Box>
             )
