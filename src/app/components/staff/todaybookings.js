@@ -11,10 +11,18 @@ import {
   TableRow,
 } from "@mui/material";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 function TodayBooking({ data, onRefresh }) {
+  const [booked, setBooked] = useState([])
 
-  let Booked = data.filter((item) => item.Status == "Booked");
+  useEffect(()=>{
+
+    let Booked = data.filter((item) => item.Status == "Booked");
+    setBooked(Booked)
+
+  },[data])
+
 
   let handlePTD = (patient) => {
     let updateData = {
@@ -56,7 +64,7 @@ function TodayBooking({ data, onRefresh }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Booked.map((patient) => (
+            {booked.map((patient) => (
               <TableRow
                 key={patient.patient_id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

@@ -10,11 +10,6 @@ function StaffHomePage() {
       color: "#029600",
     },
     {
-      menu: "Pending Booking",
-      api: "/staff/pendingbooking",
-      color: "#E5E102",
-    },
-    {
       menu: "New Patient",
       api: "/staff/newpatients",
       color: "#02E5E1",

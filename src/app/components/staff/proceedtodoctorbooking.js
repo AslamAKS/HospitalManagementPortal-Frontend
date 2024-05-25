@@ -9,10 +9,18 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 
 function ProccedToDoctorBooking({data,onRefresh}) {
+
+  const [ptd, setPtd] = useState([])
+
+  useEffect(() => {
+    
+    let PTD = data.filter((item)=> item.Status=='PTD')
+    setPtd(PTD)
+  }, [data])
   
-  let ptd = data.filter((item)=> item.Status=='PTD')
 
   return (
     <div className="overflow-x-auto">

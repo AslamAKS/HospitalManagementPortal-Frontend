@@ -11,10 +11,17 @@ import {
   TableRow,
 } from "@mui/material";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 function PendingBooking({data,onRefresh}) {
+  const [pending, setPending] = useState([])
 
-  let Pending = data.filter((item)=> item.Status=='Pending')
+  useEffect(() => {
+    
+    let Pending = data.filter((item)=> item.Status=='Pending')
+    setPending(Pending)
+  }, [data])
+  
 
   let handlePTD = (patient) => {
     let updateData = {
@@ -56,7 +63,7 @@ function PendingBooking({data,onRefresh}) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Pending.map((patient) => (
+            {pending.map((patient) => (
               <TableRow
                 key={patient.patient_id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
