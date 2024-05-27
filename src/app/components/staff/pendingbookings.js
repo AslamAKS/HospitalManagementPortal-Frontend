@@ -1,5 +1,6 @@
 "use client";
 
+import { CreateBookingContext } from "@/app/context/newbookingcontext";
 import {
   Button,
   Paper,
@@ -11,9 +12,11 @@ import {
   TableRow,
 } from "@mui/material";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-function PendingBooking({data,onRefresh}) {
+function PendingBooking({data}) {
+  const { refreshBooking, setRefreshBooking } = useContext(CreateBookingContext);
+
   const [pending, setPending] = useState([])
 
   useEffect(() => {
@@ -25,28 +28,22 @@ function PendingBooking({data,onRefresh}) {
 
   let handlePTD = (patient) => {
     let updateData = {
-      BookingDate: patient.BookingDate,
-      TokenNo:patient.TokenNo,
-      PatientId:patient.PatientId,
+      id:patient.id,
       Status: "PTD",
-      Commets:patient.Commets
     };
     axios.put(`http://localhost:8000/booking`,updateData).then((responce)=>alert(responce.data))
 
-    onRefresh()
+    setRefreshBooking(!refreshBooking)
   };
 
   let handleCancel = (patient) => {
     let updateData = {
-      BookingDate: patient.BookingDate,
-      TokenNo:patient.TokenNo,
-      PatientId:patient.PatientId,
+      id:patient.id,
       Status: "Canceled",
-      Commets:patient.Commets
     };
     axios.put(`http://localhost:8000/booking`,updateData).then((responce)=>alert(responce.data))
 
-    onRefresh()
+    setRefreshBooking(!refreshBooking)
   };
 
   return (

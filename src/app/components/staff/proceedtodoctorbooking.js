@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 
-function ProccedToDoctorBooking({data,onRefresh}) {
+function ProccedToDoctorBooking({data}) {
 
   const [ptd, setPtd] = useState([])
 

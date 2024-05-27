@@ -1,6 +1,7 @@
 "use client";
 
 import NewBooking from "@/app/components/staff/newbooking";
+import PatientMedicine from "@/app/components/staff/patientmedicine";
 import PendingBooking from "@/app/components/staff/pendingbookings";
 import ProccedToDoctorBooking from "@/app/components/staff/proceedtodoctorbooking";
 import TodayBooking from "@/app/components/staff/todaybookings";
@@ -12,10 +13,9 @@ import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
 
 function Bookings() {
-  const { bookingpage, setBookingPage } = useContext(CreateBookingContext);
+  const { bookingpage, setBookingPage,refreshBooking, setRefreshBooking } = useContext(CreateBookingContext);
   const [value, setValue] = useState("1");
   const [bookings, setBookings] = useState([]);
-  const [refresh, setRefresh] = useState(false);
   const [tokenNo, setTokenNO] = useState(0);
 
   useEffect(() => {
@@ -36,11 +36,9 @@ function Bookings() {
           console.log("no last elment");
         }
       });
-  }, [refresh]);
+  }, [refreshBooking]);
 
-  const handleRefresh = () => {
-    setRefresh((prev) => !prev); // Toggle the refresh state to trigger useEffect
-  };
+  
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -70,7 +68,7 @@ function Bookings() {
         New Booking
       </Button>
       {bookingpage ? (
-        <NewBooking data={tokenNo} onRefresh={handleRefresh} />
+        <NewBooking data={tokenNo}  />
       ) : null}
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -78,16 +76,20 @@ function Bookings() {
             <Tab label="Today Booking" value="1" />
             <Tab label="Pending Booking" value="2" />
             <Tab label="Proceed To Doctor" value="3" />
+            <Tab label="Medicines" value="4" />
           </TabList>
         </Box>
         <TabPanel value="1">
-          <TodayBooking data={bookings} onRefresh={handleRefresh} />
+          <TodayBooking data={bookings}  />
         </TabPanel>
         <TabPanel value="2">
-          <PendingBooking data={bookings} onRefresh={handleRefresh} />
+          <PendingBooking data={bookings}  />
         </TabPanel>
         <TabPanel value="3">
-          <ProccedToDoctorBooking data={bookings} onRefresh={handleRefresh} />
+          <ProccedToDoctorBooking data={bookings}  />
+        </TabPanel>
+        <TabPanel value="4">
+          <PatientMedicine data={bookings}  />
         </TabPanel>
       </TabContext>
     </Box>

@@ -16,19 +16,13 @@ function StaffHomePage() {
     },
     {
       menu: "Medicine",
-      api: "/staff/patientmedicine",
+      api: "/staff/medicines",
       color: "#02E58C",
     },
     {
       menu: "Booking History",
       api: "/staff/bookinghistory",
       color: "#81E502",
-    },
-
-    {
-      menu: "Add Medicine",
-      api: "/staff/addmedicines",
-      color: "#02D3E5",
     },
   ];
 

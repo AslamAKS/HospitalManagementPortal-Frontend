@@ -16,8 +16,8 @@ import axios from "axios";
 import moment from "moment";
 import React, { useContext, useState } from "react";
 
-function NewBooking({ data, onRefresh }) {
-  const { bookingpage, setBookingPage } = useContext(CreateBookingContext);
+function NewBooking({ data }) {
+  const { bookingpage, setBookingPage,refreshBooking, setRefreshBooking } = useContext(CreateBookingContext);
   const [patientDetails, setPatientDetails] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
 
@@ -67,7 +67,7 @@ function NewBooking({ data, onRefresh }) {
         .post(`http://localhost:8000/booking`, bookingDetails)
         .then((responce) => console.log(responce.data));
     }
-    onRefresh();
+    setRefreshBooking(!refreshBooking);
     setBookingPage(false);
   };
 

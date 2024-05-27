@@ -6,9 +6,10 @@ export const CreateBookingContext = createContext();
 
 function NewBookingContextProvider({ children }) {
   const [bookingpage, setBookingPage] = useState(false);
+  const [refreshBooking, setRefreshBooking] = useState(false);
 
   return (
-    <CreateBookingContext.Provider value={{ bookingpage, setBookingPage }}>
+    <CreateBookingContext.Provider value={{ bookingpage, setBookingPage,refreshBooking, setRefreshBooking }}>
       {children}
     </CreateBookingContext.Provider>
   );
