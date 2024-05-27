@@ -1,5 +1,7 @@
 "use client";
 
+import PrescriptionPage from "@/app/components/doctor/prescription";
+import { CreateBookingContext } from "@/app/context/newbookingcontext";
 import {
   Button,
   Paper,
@@ -12,10 +14,12 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 
 function DoctorAppoiments() {
   const [appoiments, setAppoiments] = useState([]);
+  const [appoiment,setAppoiment]=useState([])
+  const {prescriptionPage,setPrescriptionPage,refreshBooking, setRefreshBooking}=useContext(CreateBookingContext);
   useEffect(() => {
     let todayDate = moment().startOf("day").format("YYYY-MM-DD HH:mm:ss.SSS");
 
@@ -25,7 +29,12 @@ function DoctorAppoiments() {
         let ptd = responce.data.filter((item) => item.Status == "PTD");
         setAppoiments(ptd);
       });
-  }, []);
+  }, [refreshBooking]);
+
+  let handlePTD=(patient)=>{
+    setPrescriptionPage(true)
+    setAppoiment(patient)
+  }
 
   let handleCancel = (patient) => {
     let updateData = {
@@ -34,10 +43,12 @@ function DoctorAppoiments() {
     };
     axios.put(`http://localhost:8000/booking`,updateData).then((responce)=>alert(responce.data))
 
-    // onRefresh()
+    setRefreshBooking(!refreshBooking)
   };
 
   return (
+    <Fragment>
+      {prescriptionPage?<PrescriptionPage data={appoiment}/>:null}
     <TableContainer
       component={Paper}
       sx={{ height: "100vh", backgroundRepeat: "no-repeat" }}
@@ -86,6 +97,7 @@ function DoctorAppoiments() {
         </TableBody>
       </Table>
     </TableContainer>
+    </Fragment>
   );
 }
 
