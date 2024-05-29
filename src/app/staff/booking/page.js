@@ -24,16 +24,13 @@ function Bookings() {
     let callBookingDetails = axios
       .get(`http://localhost:8000/booking?date=${todayDate}`)
       .then((responce) => {
-        console.log(responce.data);
         setBookings(responce.data);
         let lastElement = responce.data.at(-1);
         if (lastElement) {
-          console.log("yes last elment");
           let tokenNumber = lastElement.TokenNo + 1;
           setTokenNO(tokenNumber);
         } else {
           setTokenNO(1);
-          console.log("no last elment");
         }
       });
   }, [refreshBooking]);
